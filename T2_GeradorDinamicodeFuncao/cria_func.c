@@ -2,15 +2,12 @@
 // Matheus Fonseca Vilella - 2210498 - 3WA
 #include "cria_func.h"
 #include <stdio.h>
-#include <string.h>
 
 int insereComando(unsigned char codigo[], unsigned char comando[], int pos, int tam) {
     for (int i = 0; i < tam; i++)
         codigo[pos++] = comando[i];
     return pos;
 }
-
-
 void cria_func(void* f, DescParam params[], int n, unsigned char codigo[]) {
     unsigned char prologo[] = { 0x55, 0x48, 0x89, 0xE5 }; // Push %rbp, movq %rsp, %rbp
     unsigned char registradoresParam[] = { 0xbf, 0xbe, 0xba }; //Instruções mov $const, %reg-parametro
@@ -58,12 +55,13 @@ void cria_func(void* f, DescParam params[], int n, unsigned char codigo[]) {
                 unsigned char comando0[] = { 0x48, 0x89, 0xf2, 0x48, 0x89, 0xfe };
                 pos = insereComando(codigo, comando0, pos, sizeof(comando0));
             }
-            else if (params[1].tipo_val == PTR_PAR && params[2].tipo_val == INT_PAR) {
-                unsigned char comando0[] = { 0x48, 0x89, 0xf2, 0x89, 0xfe };
+            else if (params[1].tipo_val == PTR_PAR &&
+                params[2].tipo_val == INT_PAR) {
+                unsigned char comando0[] = { 0x89, 0xf2, 0x48, 0x89, 0xfe };
                 pos = insereComando(codigo, comando0, pos, sizeof(comando0));
             }
             else if (params[1].tipo_val == INT_PAR && params[2].tipo_val == PTR_PAR) {
-                unsigned char comando0[] = { 0x89, 0xf2, 0x48, 0x89, 0xfe };
+                unsigned char comando0[] = { 0x48, 0x89, 0xf2, 0x89, 0xfe };
                 pos = insereComando(codigo, comando0, pos, sizeof(comando0));
             }
             else if (params[1].tipo_val == INT_PAR && params[2].tipo_val == INT_PAR) {
@@ -81,6 +79,7 @@ void cria_func(void* f, DescParam params[], int n, unsigned char codigo[]) {
                 unsigned char comando0[] = { 0x89, 0xfe };
                 pos = insereComando(codigo, comando0, pos, sizeof(comando0));
             }
+
         }
         // novaF(z) > f(FIX, FIX, z)
         else if (amarrado[0] && amarrado[1] && !amarrado[2]) {
@@ -138,7 +137,6 @@ void cria_func(void* f, DescParam params[], int n, unsigned char codigo[]) {
             }
         }
     }
-
     unsigned char vetorPtr[sizeof(double)];
     unsigned long ponteiroFAux = (unsigned long)f;
     for (int i = 0; i < sizeof(double); ++i) {
